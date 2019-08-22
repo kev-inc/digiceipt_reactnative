@@ -2,6 +2,7 @@ import React from 'react'
 import { Text, View, Button, SectionList, StyleSheet } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import { SearchBar, Avatar, ListItem } from 'react-native-elements'
+import faker from 'faker'
 
 class DetailsScreen extends React.Component {
   static navigationOptions = {
@@ -32,10 +33,10 @@ class ReceiptScreen extends React.Component {
     title: 'Receipts'
   }
 
+
   render() {
 
     const {search} = this.state
-
     return (
       <View style={{ flex: 1}}>
 

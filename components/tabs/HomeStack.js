@@ -1,9 +1,9 @@
 import React from 'react'
-import { View, Button, Dimensions, Image, ScrollView } from 'react-native';
+import { View, Button, Dimensions, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Text, Tile, Card } from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation';
-import { VictoryLine, VictoryGroup } from "victory-native";
-
+import { PieChart } from 'react-native-svg-charts'
+import faker from 'faker'
 
 
 class DetailsScreen extends React.Component {
@@ -21,63 +21,118 @@ class DetailsScreen extends React.Component {
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'Digiceipt'
+    title: `Hello, ${faker.name.firstName()}`
   }
 
   render() {
 
-    var data = [
-      { x: 0, y: 2 },
-      { x: 1, y: 2 },
-      { x: 2, y: 3 },
-      { x: 3, y: 5 },
-      { x: 4, y: 4 },
-      { x: 5, y: 6 },
-      { x: 6, y: 6 }
+    const categories = [{
+      category: 'Groceries', img: 'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80', amt: 68.27, color: '#24d654'
+    }, {
+      category: 'Leisure', img: 'https://images.unsplash.com/photo-1445307806294-bff7f67ff225?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1053&q=80', amt: 24.34, color: '#fa2a4d'
+    }, {
+      category: 'School', img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80', amt: 13.24, color: '#facd2a'
+    }, {
+      category: 'Shopping', img: 'https://images.unsplash.com/photo-1481437156560-3205f6a55735?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1071&q=80', amt: 87.32, color: '#2ac1f7'
+    }]
+
+    const totalSpend = categories.map(item => item.amt).reduce((x, y) => x + y)
+
+    const pieData = categories
+      .filter(value => value.amt > 0)
+      .map((value, index) => ({
+        value: value.amt,
+        svg: {
+          fill: value.color
+        },
+        key: `pie-${index}`,
+      }))
+
+
+    const ads = [
+      'https://laz-img-cdn.alicdn.com/images/ims-web/TB1bSgUdAL0gK0jSZFxXXXWHVXa.jpg_1200x1200.jpg',
+      'https://laz-img-cdn.alicdn.com/images/ims-web/TB1shIWdAT2gK0jSZFkXXcIQFXa.jpg_2200x2200Q100.jpg_.webp',
+      'https://laz-img-cdn.alicdn.com/images/ims-web/TB14RkRduT2gK0jSZFvXXXnFXXa.jpg_2200x2200Q100.jpg_.webp',
+      'https://dp.image-gmkt.com/dp2016/SG/GMKT.IMG/premium/2019/08/13/16/57ced720-df17-41bb-ae24-7ca2cef83c25.jpg',
+      'https://dp.image-gmkt.com/dp2016/SG/GMKT.IMG/special/2019/07/18/96f56fa7-7e62-4324-84ce-93a24f5601ff.jpg',
+      'https://dp.image-gmkt.com/dp2016/SG/GMKT.IMG/mall/2019/08/20/10/87fe5b02-141a-4848-8851-e4a0471afc77.jpg',
+      'https://dp.image-gmkt.com/dp2016/SG/GMKT.IMG/mall/2019/08/16/20/f8d69d60-ec35-42ef-ac1b-8c7f2c231bdf.jpg'
     ]
 
     return (
 
-      <ScrollView style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1, padding: 16 }}>
 
-        <View style={{ padding: 16 }}>
-          <Text h3>Welcome back,</Text>
-          <Text h4>John</Text>
+        <View style={{ marginVertical: 16 }}>
+
+          <PieChart
+            style={{ height: 200, marginVertical: 8 }}
+            data={pieData}
+          />
+          <Text style={{
+            textAlign: 'center',
+            textAlignVertical: 'center',
+            marginVertical: 8,
+            position: 'absolute',
+            width: Dimensions.get('window').width - 32,
+            height: 200,
+            fontWeight: 'bold',
+            opacity: 0.5,
+            fontSize: 16
+          }}>${totalSpend}</Text>
+
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {categories.map((item, index) => (
+              <TouchableOpacity key={index} style={{ margin: 8, borderRadius: 16, elevation: 2, overflow: 'hidden'}} onPress={() => undefined}>
+                <Image style={{ width: 240, height: 120, opacity: 0.5 }}
+                  source={{ uri: item.img }} />
+                <View style={{
+                  position: 'absolute',
+                  width: 240,
+                  height: 120,
+                }}>
+                  <Text style={{
+                  textAlign: 'center',
+                  textAlignVertical: 'center',
+                  fontWeight: 'bold',
+                  height: 120,
+                  fontSize: 16, 
+                  color: '#ffffff'
+                }}>{item.category}</Text></View>
+                {/* <Image style={{ width: 42, height: 42, marginBottom: 32 }} source={{ uri: item.img }} />
+                <Text style={{ opacity: 0.3, fontWeight: 'bold' }}>{item.category}</Text>
+                <Text style={{ fontSize: 16 }}>${item.amt}</Text> */}
+              </TouchableOpacity>
+
+            ))}
+          </ScrollView>
         </View>
 
-        {/* <Card style={{alignItems: 'center'}}>
-          <VictoryGroup>
-            <VictoryLine interpolation="natural"
-              data={data}
-              labels={(datum) => datum.x == 5 ? `$${datum.y}` : ``}
-            />
-          </VictoryGroup>
-        </Card> */}
+        <View style={{ marginVertical: 16 }}>
+          <Text h4>Recent Expenses</Text>
+          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            {categories.map((item, index) => (
+              <TouchableOpacity key={index} style={{ width: 120, backgroundColor: '#fcfcfc', margin: 8, borderRadius: 16, padding: 16, elevation: 2 }} onPress={() => undefined}>
+                <Image style={{ width: 42, height: 42, marginBottom: 32 }} source={{ uri: item.img }} />
+                <Text style={{ opacity: 0.3, fontWeight: 'bold' }}>{item.category}</Text>
+                <Text style={{ fontSize: 16 }}>${item.amt}</Text>
+              </TouchableOpacity>
 
-        <Tile containerStyle={{padding:16, height: 240, }}
-          imageSrc={{ uri: 'https://storage.googleapis.com/carousell-wordpress-files/1/2019/02/carousell-autos-home-screen-cars-for-sale-singapore.png' }}
-          activeOpacity={0.75}
-        />
+            ))}
+          </ScrollView>
+        </View>
 
-        
+        <View style={{ marginVertical: 16 }}>
+          <Text h4>Deals you'll like</Text>
 
-        <Tile containerStyle={{padding:16, height: 240}}
-          imageSrc={{ uri: 'http://cdn.gsmarena.com/imgroot/news/16/09/ads-appstore/-728x314/gsmarena_001.jpg' }}
-          activeOpacity={0.75}
-        />
+          {ads.map((item, index) => (
+            <TouchableOpacity key={index} style={{ borderRadius: 16, marginVertical: 8 }} onPress={() => undefined}>
+              <Image style={{ width: Dimensions.get('window').width - 32, height: 120, borderRadius: 16 }}
+                source={{ uri: item }} />
+            </TouchableOpacity>
+          ))}
 
-        <Tile containerStyle={{padding:16, height: 240}}
-          imageSrc={{ uri: 'https://s3-ap-southeast-1.amazonaws.com/s3.loopme.my/img/newos/posts/d/5498_WhC8zguYvfxHBwcu_.jpg' }}
-          activeOpacity={0.75}
-        />
-
-
-
-
-        {/* <Button
-          title="Go to Home Details"
-          onPress={() => this.props.navigation.navigate('Details')}
-        /> */}
+        </View>
       </ScrollView>
     );
   }
