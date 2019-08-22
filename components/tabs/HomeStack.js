@@ -1,9 +1,10 @@
 import React from 'react'
-import { View, Button, Dimensions, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { Text, Tile, Card } from 'react-native-elements'
+import { View, SectionList, Dimensions, Image, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, Card, ListItem } from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation';
 import { PieChart } from 'react-native-svg-charts'
 import faker from 'faker'
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 class DetailsScreen extends React.Component {
@@ -34,6 +35,20 @@ class HomeScreen extends React.Component {
       category: 'School', img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80', amt: 13.24, color: '#facd2a'
     }, {
       category: 'Shopping', img: 'https://images.unsplash.com/photo-1481437156560-3205f6a55735?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1071&q=80', amt: 87.32, color: '#2ac1f7'
+    }]
+
+    const recent = [{
+      amt: 12.34, 
+      img: 'http://bq.sg/wp-content/uploads/2017/01/292611_10150633680856409_1734062773_n.jpg',
+      name: 'NTUC'
+    },{
+      amt: 12.34, 
+      img: 'http://bq.sg/wp-content/uploads/2017/01/292611_10150633680856409_1734062773_n.jpg',
+      name: 'NTUC'
+    },{
+      amt: 12.34, 
+      img: 'http://bq.sg/wp-content/uploads/2017/01/292611_10150633680856409_1734062773_n.jpg',
+      name: 'NTUC'
     }]
 
     const totalSpend = categories.map(item => item.amt).reduce((x, y) => x + y)
@@ -83,25 +98,14 @@ class HomeScreen extends React.Component {
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {categories.map((item, index) => (
-              <TouchableOpacity key={index} style={{ margin: 8, borderRadius: 16, elevation: 2, overflow: 'hidden'}} onPress={() => undefined}>
-                <Image style={{ width: 240, height: 120, opacity: 0.5 }}
-                  source={{ uri: item.img }} />
-                <View style={{
-                  position: 'absolute',
-                  width: 240,
-                  height: 120,
-                }}>
-                  <Text style={{
-                  textAlign: 'center',
-                  textAlignVertical: 'center',
-                  fontWeight: 'bold',
-                  height: 120,
-                  fontSize: 16, 
-                  color: '#ffffff'
-                }}>{item.category}</Text></View>
-                {/* <Image style={{ width: 42, height: 42, marginBottom: 32 }} source={{ uri: item.img }} />
-                <Text style={{ opacity: 0.3, fontWeight: 'bold' }}>{item.category}</Text>
-                <Text style={{ fontSize: 16 }}>${item.amt}</Text> */}
+              <TouchableOpacity key={index} style={{ margin: 8, borderRadius: 16, elevation: 2, overflow: 'hidden' }} onPress={() => undefined}>
+                <ImageBackground source={{ uri: item.img }} style={{ width: 160, height: 96 }}>
+                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
+                    <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.category}</Text>
+                    <Text style={{ color: 'white', fontSize: 20 }}>${item.amt}</Text>
+                  </View>
+
+                </ImageBackground>
               </TouchableOpacity>
 
             ))}
@@ -110,16 +114,7 @@ class HomeScreen extends React.Component {
 
         <View style={{ marginVertical: 16 }}>
           <Text h4>Recent Expenses</Text>
-          <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {categories.map((item, index) => (
-              <TouchableOpacity key={index} style={{ width: 120, backgroundColor: '#fcfcfc', margin: 8, borderRadius: 16, padding: 16, elevation: 2 }} onPress={() => undefined}>
-                <Image style={{ width: 42, height: 42, marginBottom: 32 }} source={{ uri: item.img }} />
-                <Text style={{ opacity: 0.3, fontWeight: 'bold' }}>{item.category}</Text>
-                <Text style={{ fontSize: 16 }}>${item.amt}</Text>
-              </TouchableOpacity>
-
-            ))}
-          </ScrollView>
+          
         </View>
 
         <View style={{ marginVertical: 16 }}>
