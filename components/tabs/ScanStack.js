@@ -1,6 +1,7 @@
 import React from 'react'
 import { createStackNavigator } from 'react-navigation';
-import { Text, View, StyleSheet, Button, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, SectionList } from 'react-native';
+import { Button, ListItem, Input } from 'react-native-elements'
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
@@ -16,21 +17,53 @@ class DetailsScreen extends React.Component {
 
     const { navigation } = this.props
     const scanData = navigation.getParam('scanData', 'Error reading QR code')
-    const source = { uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf' }
     return (
       <View style={{ flex: 1, alignItems: 'center' }}>
 
-        <WebView
-          source={{
-            uri: 'https://docs.google.com/gview?embedded=true&url=http://www.africau.edu/images/default/sample.pdf' }}
-          style={{ width: Dimensions.get('window').width}} />
+        <View style={{ flex: 1 }} >
+          <WebView
+            source={{ uri: scanData }}
+            style={{ width: Dimensions.get('window').width }} />
+        </View>
+
+        <View style={{ flex: 1 }} >
+
+          <View style={{ flex: 1 }}>
+            <Input label='Merchant Name' />
+            <Input keyboardType = 'numeric' label='Amount Paid ($)' />
+          </View>
+
+
+
+          <View style={{ flexDirection: 'row', flex: 1 }}>
+            <Button title='Cancel' type='clear' containerStyle={{ width: '50%' }} />
+            <Button title='Save Receipt' containerStyle={{ width: '50%' }} />
+
+          </View>
+        </View>
+
 
       </View>
     );
   }
-
-
 }
+
+const styles = StyleSheet.create({
+  sectionHeader: {
+    paddingTop: 8,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingBottom: 8,
+    fontSize: 14,
+    fontWeight: 'bold',
+    backgroundColor: 'rgba(247,247,247,1.0)',
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+})
 
 class ScanScreen extends React.Component {
   state = {
@@ -80,7 +113,7 @@ class ScanScreen extends React.Component {
 }
 
 export default createStackNavigator({
-  // Scan: ScanScreen,
+  Scan: ScanScreen,
   Details: DetailsScreen
 })
 

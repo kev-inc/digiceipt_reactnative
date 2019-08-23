@@ -1,10 +1,13 @@
 import React from 'react'
-import { View, SectionList, Dimensions, Image, ImageBackground, ScrollView, TouchableOpacity } from 'react-native';
-import { Text, Card, ListItem } from 'react-native-elements'
+import { View, SectionList, Dimensions, Image, ImageBackground, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import { Text, Card, ListItem, Button } from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation';
 import { PieChart } from 'react-native-svg-charts'
 import faker from 'faker'
 import { LinearGradient } from 'expo-linear-gradient';
+import { ads } from '../../assets/sampledata/sampleads'
+import { colors } from '../../assets/sampledata/samplecolors'
+import { categories } from '../../assets/sampledata/samplepiechart'
 
 
 class DetailsScreen extends React.Component {
@@ -22,33 +25,26 @@ class DetailsScreen extends React.Component {
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: `Hello, ${faker.name.firstName()}`
+    title: `Digiceipt`
   }
 
   render() {
 
-    const categories = [{
-      category: 'Groceries', img: 'https://images.unsplash.com/photo-1516594798947-e65505dbb29d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80', amt: 68.27, color: '#24d654'
-    }, {
-      category: 'Leisure', img: 'https://images.unsplash.com/photo-1445307806294-bff7f67ff225?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1053&q=80', amt: 24.34, color: '#fa2a4d'
-    }, {
-      category: 'School', img: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80', amt: 13.24, color: '#facd2a'
-    }, {
-      category: 'Shopping', img: 'https://images.unsplash.com/photo-1481437156560-3205f6a55735?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1071&q=80', amt: 87.32, color: '#2ac1f7'
-    }]
-
     const recent = [{
-      amt: 12.34, 
+      amt: 12.34,
       img: 'http://bq.sg/wp-content/uploads/2017/01/292611_10150633680856409_1734062773_n.jpg',
-      name: 'NTUC'
-    },{
-      amt: 12.34, 
-      img: 'http://bq.sg/wp-content/uploads/2017/01/292611_10150633680856409_1734062773_n.jpg',
-      name: 'NTUC'
-    },{
-      amt: 12.34, 
-      img: 'http://bq.sg/wp-content/uploads/2017/01/292611_10150633680856409_1734062773_n.jpg',
-      name: 'NTUC'
+      name: 'NTUC',
+      color: colors.groceries
+    }, {
+      amt: 95.32,
+      img: 'https://blog.iuiga.com/wp-content/uploads/2018/10/Singtel-Logo.jpg',
+      name: 'Singtel',
+      color: colors.leisure
+    }, {
+      amt: 124.53,
+      img: 'https://i.pinimg.com/originals/40/fa/4d/40fa4da285df398dedff38c1c34bb113.jpg',
+      name: 'Tommy Hilfiger',
+      color: colors.shopping
     }]
 
     const totalSpend = categories.map(item => item.amt).reduce((x, y) => x + y)
@@ -64,19 +60,21 @@ class HomeScreen extends React.Component {
       }))
 
 
-    const ads = [
-      'https://laz-img-cdn.alicdn.com/images/ims-web/TB1bSgUdAL0gK0jSZFxXXXWHVXa.jpg_1200x1200.jpg',
-      'https://laz-img-cdn.alicdn.com/images/ims-web/TB1shIWdAT2gK0jSZFkXXcIQFXa.jpg_2200x2200Q100.jpg_.webp',
-      'https://laz-img-cdn.alicdn.com/images/ims-web/TB14RkRduT2gK0jSZFvXXXnFXXa.jpg_2200x2200Q100.jpg_.webp',
-      'https://dp.image-gmkt.com/dp2016/SG/GMKT.IMG/premium/2019/08/13/16/57ced720-df17-41bb-ae24-7ca2cef83c25.jpg',
-      'https://dp.image-gmkt.com/dp2016/SG/GMKT.IMG/special/2019/07/18/96f56fa7-7e62-4324-84ce-93a24f5601ff.jpg',
-      'https://dp.image-gmkt.com/dp2016/SG/GMKT.IMG/mall/2019/08/20/10/87fe5b02-141a-4848-8851-e4a0471afc77.jpg',
-      'https://dp.image-gmkt.com/dp2016/SG/GMKT.IMG/mall/2019/08/16/20/f8d69d60-ec35-42ef-ac1b-8c7f2c231bdf.jpg'
-    ]
-
     return (
 
-      <ScrollView style={{ flex: 1, padding: 16 }}>
+      <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
+
+        <View style={{ marginVertical: 16 }}>
+
+          <View style={{ flexDirection: 'row' }}>
+            <Text style={{ fontWeight: 'normal', fontSize: 28, }}>Hi </Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 28, }}>{faker.name.firstName()}!</Text>
+          </View>
+
+          <Text style={{ fontWeight: 'normal', fontSize: 16, opacity: 0.5 }}>Here's a summary of your expenses this week!</Text>
+
+
+        </View>
 
         <View style={{ marginVertical: 16 }}>
 
@@ -93,18 +91,19 @@ class HomeScreen extends React.Component {
             height: 200,
             fontWeight: 'bold',
             opacity: 0.5,
-            fontSize: 16
+            fontSize: 20
           }}>${totalSpend}</Text>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
             {categories.map((item, index) => (
               <TouchableOpacity key={index} style={{ margin: 8, borderRadius: 16, elevation: 2, overflow: 'hidden' }} onPress={() => undefined}>
-                <ImageBackground source={{ uri: item.img }} style={{ width: 160, height: 96 }}>
-                  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
+                <ImageBackground source={{ uri: item.img }} style={{ flexDirection: 'row', width: 160, height: 96, borderBottomColor: item.color }}>
+                  <View style={{ flex: 1, backgroundColor: item.color }}></View>
+                  <View style={{ flex: 8, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.category}</Text>
                     <Text style={{ color: 'white', fontSize: 20 }}>${item.amt}</Text>
                   </View>
-
+                  <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }}></View>
                 </ImageBackground>
               </TouchableOpacity>
 
@@ -113,17 +112,41 @@ class HomeScreen extends React.Component {
         </View>
 
         <View style={{ marginVertical: 16 }}>
-          <Text h4>Recent Expenses</Text>
-          
+
+          <View style={{ flexDirection: 'row', marginVertical: 16 }}>
+            <Text style={{ fontWeight: 'normal', fontSize: 28, }}>Recent </Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 28, }}>Expenses</Text>
+          </View>
+
+          <View>
+            {recent.map((item, index) => (
+              <TouchableOpacity key={index} style={{ margin: 8, borderRadius: 16, elevation: 2, overflow: 'hidden', flexDirection: 'row' }} onPress={() => undefined}>
+                <View style={{ flex: 1, backgroundColor: item.color }}></View>
+
+                <Image source={{ uri: item.img }} style={{ width: 96, height: 96 }} />
+                <View style={{ flex: 14, backgroundColor: '#fafafa', padding: 16, }}>
+                  <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', flex: 2 }}>{item.name}</Text>
+                    <Text style={{ fontSize: 16, flex: 1, textAlign: 'right' }}>${item.amt}</Text>
+                  </View>
+
+                  <Text style={{ fontSize: 12, opacity: 0.6 }}>Paid 2 days ago at 11:17am</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+            <Button title='View all' type='clear' containerStyle={{marginVertical: 8}} onPress={() => this.props.navigation.navigate('Receipts')}/>
+          </View>
+
         </View>
 
+
         <View style={{ marginVertical: 16 }}>
-          <Text h4>Deals you'll like</Text>
+          <Text style={{ fontWeight: 'bold', fontSize: 28}}>Deals you'll like</Text>
 
           {ads.map((item, index) => (
-            <TouchableOpacity key={index} style={{ borderRadius: 16, marginVertical: 8 }} onPress={() => undefined}>
+            <TouchableOpacity key={index} style={{ borderRadius: 16, marginVertical: 8 }} onPress={() => Linking.openURL(item.link)}>
               <Image style={{ width: Dimensions.get('window').width - 32, height: 120, borderRadius: 16 }}
-                source={{ uri: item }} />
+                source={{ uri: item.img }} />
             </TouchableOpacity>
           ))}
 
