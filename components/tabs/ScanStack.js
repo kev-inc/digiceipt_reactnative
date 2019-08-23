@@ -4,6 +4,8 @@ import { Text, View, StyleSheet, Button, Dimensions } from 'react-native';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
+import { WebView } from 'react-native-webview'
+
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
 class DetailsScreen extends React.Component {
@@ -14,12 +16,14 @@ class DetailsScreen extends React.Component {
 
     const { navigation } = this.props
     const scanData = navigation.getParam('scanData', 'Error reading QR code')
-    const source = { url: 'http://samples.leanpub.com/thereactnativebook-sample.pdf' }
+    const source = { uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf' }
     return (
       <View style={{ flex: 1, alignItems: 'center' }}>
-       
 
-
+        <WebView
+          source={{
+            uri: 'https://docs.google.com/gview?embedded=true&url=http://www.africau.edu/images/default/sample.pdf' }}
+          style={{ width: Dimensions.get('window').width}} />
 
       </View>
     );
@@ -76,7 +80,7 @@ class ScanScreen extends React.Component {
 }
 
 export default createStackNavigator({
-  Scan: ScanScreen,
+  // Scan: ScanScreen,
   Details: DetailsScreen
 })
 
