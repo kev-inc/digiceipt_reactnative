@@ -2,7 +2,7 @@ import React from 'react'
 import { Text, View, Button, SectionList, StyleSheet } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
 import { SearchBar, Avatar, ListItem } from 'react-native-elements'
-import faker from 'faker'
+import { getReceiptDataWithID, snapshotToArray } from '../Firebase'
 
 class DetailsScreen extends React.Component {
   static navigationOptions = {
@@ -22,7 +22,9 @@ class DetailsScreen extends React.Component {
 class ReceiptScreen extends React.Component {
 
   state = {
-    search : ''
+    search : '',
+    receiptData: [], 
+    loaded: false
   }
 
   updateSearch = search => {
@@ -33,10 +35,59 @@ class ReceiptScreen extends React.Component {
     title: 'Receipts'
   }
 
+  componentDidMount() {
+    getReceiptDataWithID('000001').once('value', snapshot => {
+      this.setState({receiptData: snapshotToArray(snapshot).reverse(), loaded: true})
+    })
+  }
+
+  categoriseByDate(array) {
+    let catarr = {}
+    array.map(x => {
+      let d = new Date(x.timestamp).toDateString()
+      let tmp
+      if (!catarr.hasOwnProperty(d)) {
+        tmp = []
+      } else {
+        tmp = catarr[d]
+      }
+      tmp.push(x)
+      catarr[d] = tmp
+    })
+    console.log(catarr)
+
+    let formatted = []
+    Object.keys(catarr).forEach(key => {
+      formatted.push({title: key, data: catarr[key]})
+    })
+    return formatted
+  }
+
+  
 
   render() {
 
     const {search} = this.state
+
+    const sectionList = <SectionList
+    sections={this.categoriseByDate(this.state.receiptData)}
+    renderItem={({item}) => (
+      <ListItem
+        title={item.shopName}
+        leftElement={() => <Avatar size='medium' rounded source={{uri: item.shopThumbnail}} overlayContainerStyle={{ backgroundColor: 'white', elevation: 2}}
+        />}
+        rightElement={() => <Text>${item.amt}</Text>}
+        subtitle={`${new Date(item.timestamp).getHours()%12}:${new Date(item.timestamp).getMinutes()} ${new Date(item.timestamp).getHours()/12 == 1 ? 'am': 'pm'}`}
+        onPress={() => this.props.navigation.navigate('Details', {
+          name: item.shopName
+        })}
+        />
+    )}
+    renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
+    keyExtractor = {(item, index) => index}/>
+
+
+
     return (
       <View style={{ flex: 1}}>
 
@@ -46,23 +97,9 @@ class ReceiptScreen extends React.Component {
         value={search}
         platform='android' />
 
-      <SectionList
-        sections={[
-          {title: '24 May 2019', data:['Zara', 'Uniqlo']},
-          {title: '22 May 2019', data:['NTUC', 'Lazada', 'Forever 21', 'Food Republic']},
-          {title: '21 May 2019', data:['Astons', 'Dockers', 'Marks and Spencers', 'Shake Shack', 'Sakae Sushi']},
-        ]}
-        renderItem={({item}) => (
-          <ListItem
-            title={item}
-            leftElement={() => <Avatar size='medium' rounded title={item.charAt(0)}/>}
-            onPress={() => this.props.navigation.navigate('Details', {
-              name: item
-            })}
-            />
-        )}
-        renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
-        keyExtractor = {(item, index) => index}/>
+      {this.state.loaded ? sectionList : null}
+
+    
 
       </View>
     );

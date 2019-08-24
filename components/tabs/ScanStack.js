@@ -8,11 +8,19 @@ import { WebView } from 'react-native-webview'
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
+import { addReceiptToID } from '../Firebase'
+
 class DetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add this receipt?', 
-    headerLeft: null
+    title: 'Add this receipt?'
   }
+
+  sendDataToFirebase(receiptData, userID) {
+    addReceiptToID(receiptData, userID).then(() => {
+      this.props.navigation.replace('ReceiptAdded')
+    })
+  }
+
   render() {
 
     const sampleScanData = {
@@ -50,8 +58,8 @@ class DetailsScreen extends React.Component {
           </View>
 
           <View style={{ flexDirection: 'row', padding: 16 }}>
-            <Button title='Cancel' type='clear' containerStyle={{ width: '50%' }} onPress={() => this.props.navigation.goBack()} />
-            <Button title='Save Receipt' containerStyle={{ width: '50%' }} onPress={() => this.props.navigation.navigate('ReceiptAdded')} />
+            <Button title='Cancel' type='clear' containerStyle={{ width: '50%' }} onPress={() => this.props.navigation.replace('Scan')} />
+            <Button title='Save Receipt' containerStyle={{ width: '50%' }} onPress={() => this.sendDataToFirebase(scanData, '000001')} />
           </View>
 
         </View>
@@ -81,7 +89,7 @@ class ScanScreen extends React.Component {
   };
 
   handleBarCodeScanned = ({ type, data }) => {
-    this.props.navigation.navigate('Details', {
+    this.props.navigation.replace('Details', {
       scanData: data
     })
   };
@@ -111,8 +119,7 @@ class ScanScreen extends React.Component {
 class ReceiptAddedScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'Receipt added', 
-    headerLeft: null
+    title: 'Receipt added'
   }
 
   render() {

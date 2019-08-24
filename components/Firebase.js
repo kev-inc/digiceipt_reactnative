@@ -13,4 +13,26 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig)
 
-const { type, accessToken, user} = await Google.logInAsync()
+const database = firebase.database()
+
+export function addReceiptToID(receiptData, userID) {
+  receiptData.timestamp = Date.now()
+  return database.ref('receiptdata/' + userID).push(receiptData)
+}
+
+export function getReceiptDataWithID(userID) {
+  return database.ref('receiptdata/' + userID)
+}
+
+export function snapshotToArray(snapshot) {
+  var returnArr = [];
+
+  snapshot.forEach(function(childSnapshot) {
+      var item = childSnapshot.val();
+      item.key = childSnapshot.key;
+
+      returnArr.push(item);
+  });
+
+  return returnArr;
+};

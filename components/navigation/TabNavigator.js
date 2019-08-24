@@ -16,7 +16,7 @@ export default createBottomTabNavigator({
   Profile: MyProfilePage
 }, {
   unmountInactiveRoutes: true,
-  initialRouteName: 'Scan',
+  initialRouteName: 'Home',
   defaultNavigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ focused, horizontal, tintColor }) => {
       const { routeName } = navigation.state;
