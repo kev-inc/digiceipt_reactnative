@@ -15,6 +15,8 @@ export default createBottomTabNavigator({
   Rewards: AllRewardsPage,
   Profile: MyProfilePage
 }, {
+  unmountInactiveRoutes: true,
+  initialRouteName: 'Scan',
   defaultNavigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ focused, horizontal, tintColor }) => {
       const { routeName } = navigation.state;
@@ -39,5 +41,5 @@ export default createBottomTabNavigator({
     activeTintColor: 'tomato',
     inactiveTintColor: 'gray',
     showIcon: true
-  },
+  }
 })

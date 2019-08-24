@@ -95,7 +95,7 @@ class HomeScreen extends React.Component {
           }}>${totalSpend}</Text>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {categories.map((item, index) => (
+            {categories.sort((x,y) => y.amt - x.amt).map((item, index) => (
               <TouchableOpacity key={index} style={{ margin: 8, borderRadius: 16, elevation: 2, overflow: 'hidden' }} onPress={() => undefined}>
                 <ImageBackground source={{ uri: item.img }} style={{ flexDirection: 'row', width: 160, height: 96, borderBottomColor: item.color }}>
                   <View style={{ flex: 1, backgroundColor: item.color }}></View>
