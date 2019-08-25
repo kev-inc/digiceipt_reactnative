@@ -24,6 +24,10 @@ export function getReceiptDataWithID(userID) {
   return database.ref('receiptdata/' + userID)
 }
 
+export function deleteReceiptDataWithID(userID, receiptID) {
+  return database.ref('receiptdata/' + userID + '/' + receiptID).remove()
+}
+
 export function snapshotToArray(snapshot) {
   var returnArr = [];
 

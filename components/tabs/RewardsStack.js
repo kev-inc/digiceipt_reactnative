@@ -1,10 +1,18 @@
 import React from 'react'
 import { Text, View, Button } from 'react-native';
 import { createStackNavigator } from 'react-navigation';
+import { colors } from '../../assets/sampledata/samplecolors'
+
 
 class DetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Details'
+    title: 'Details',
+    headerStyle: {
+      backgroundColor: colors.headerColor
+    },
+    headerTitleStyle: {
+      color: colors.headerTitleColor
+    },
   }
   render() {
     return (
@@ -17,7 +25,13 @@ class DetailsScreen extends React.Component {
 
 class RewardScreen extends React.Component {
   static navigationOptions = {
-    title: 'Rewards'
+    title: 'Rewards',
+    headerStyle: {
+      backgroundColor: colors.headerColor
+    },
+    headerTitleStyle: {
+      color: colors.headerTitleColor
+    },
   }
 
   render() {

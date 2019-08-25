@@ -6,4 +6,6 @@ export const colors = {
   dining: '#0C6291',
   transport: '#FB6107',
   others: '#7F7B82',
+  headerColor: 'rgb(0,116,209)',
+  headerTitleColor: 'white'
 }

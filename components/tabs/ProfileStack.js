@@ -2,10 +2,18 @@ import React from 'react'
 import { View, Button, SectionList, StyleSheet } from 'react-native';
 import { Text, Avatar, ListItem } from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation';
+import { colors } from '../../assets/sampledata/samplecolors'
+
 
 class DetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Details'
+    title: 'Details',
+    headerStyle: {
+      backgroundColor: colors.headerColor
+    },
+    headerTitleStyle: {
+      color: colors.headerTitleColor
+    },
   }
   render() {
     const {navigation} = this.props
@@ -20,7 +28,13 @@ class DetailsScreen extends React.Component {
 
 class ProfileScreen extends React.Component {
   static navigationOptions = {
-    title: 'My Profile'
+    title: 'My Profile',
+    headerStyle: {
+      backgroundColor: colors.headerColor
+    },
+    headerTitleStyle: {
+      color: colors.headerTitleColor
+    },
   }
 
   render() {

@@ -3,7 +3,7 @@ import { createStackNavigator } from 'react-navigation';
 import { Text, View, StyleSheet, Dimensions, Image } from 'react-native';
 import { Button, Avatar } from 'react-native-elements'
 import * as Permissions from 'expo-permissions';
-
+import { colors } from '../../assets/sampledata/samplecolors'
 import { WebView } from 'react-native-webview'
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
@@ -12,7 +12,13 @@ import { addReceiptToID } from '../Firebase'
 
 class DetailsScreen extends React.Component {
   static navigationOptions = {
-    title: 'Add this receipt?'
+    title: 'Add this receipt?',
+    headerStyle: {
+      backgroundColor: colors.headerColor
+    },
+    headerTitleStyle: {
+      color: colors.headerTitleColor
+    },
   }
 
   sendDataToFirebase(receiptData, userID) {
@@ -23,16 +29,8 @@ class DetailsScreen extends React.Component {
 
   render() {
 
-    const sampleScanData = {
-      pdf: 'https://github.com/kev-inc/digiceipt_reactnative/raw/master/assets/receipt31.pdf',
-      amt: 24.39,
-      shopName: 'Lazada',
-      shopThumbnail: 'https://laz-img-cdn.alicdn.com/tfs/TB15BYfh4rI8KJjy0FpXXb5hVXa-200-200.png'
-    }
-
     const { navigation } = this.props
     const scanData = JSON.parse(navigation.getParam('scanData', 'Error reading QR code'))
-    // const scanData = sampleScanData
     return (
       <View style={{ flex: 1, alignItems: 'center' }}>
 
@@ -76,7 +74,13 @@ class ScanScreen extends React.Component {
   }
 
   static navigationOptions = {
-    title: 'Scan new receipt'
+    title: 'Scan new receipt',
+    headerStyle: {
+      backgroundColor: colors.headerColor
+    },
+    headerTitleStyle: {
+      color: colors.headerTitleColor
+    },
   }
 
   async componentDidMount() {
@@ -119,7 +123,13 @@ class ScanScreen extends React.Component {
 class ReceiptAddedScreen extends React.Component {
 
   static navigationOptions = {
-    title: 'Receipt added'
+    title: 'Receipt added',
+    headerStyle: {
+      backgroundColor: colors.headerColor
+    },
+    headerTitleStyle: {
+      color: colors.headerTitleColor
+    },
   }
 
   render() {
@@ -128,7 +138,7 @@ class ReceiptAddedScreen extends React.Component {
         <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Receipt added!</Text>
         <Image source={require('../../assets/tick.gif')} style={{ width: 120, height: 120, margin: 16 }} />
         <Text>Your receipt from Grab has been added!</Text>
-        <Button title='Back to Main' type='clear' style={{ margin: 24 }} onPress={() => this.props.navigation.navigate('Home')} />
+        <Button title='Back to Scan' type='clear' style={{ margin: 24 }} onPress={() => this.props.navigation.replace('Scan')} />
       </View>
     )
   }

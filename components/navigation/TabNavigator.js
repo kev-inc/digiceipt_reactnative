@@ -8,6 +8,8 @@ import AllReceiptsPage from '../tabs/ReceiptsStack'
 import MyProfilePage from '../tabs/ProfileStack'
 import AllRewardsPage from '../tabs/RewardsStack'
 
+import { headerColor } from '../../assets/sampledata/samplecolors'
+
 export default createBottomTabNavigator({
   Home: HomePage,
   Receipts: AllReceiptsPage,
@@ -38,7 +40,7 @@ export default createBottomTabNavigator({
     },
   }),
   tabBarOptions: {
-    activeTintColor: 'tomato',
+    activeTintColor: headerColor,
     inactiveTintColor: 'gray',
     showIcon: true
   }

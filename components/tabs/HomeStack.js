@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ads } from '../../assets/sampledata/sampleads'
 import { colors } from '../../assets/sampledata/samplecolors'
 import { categories } from '../../assets/sampledata/samplepiechart'
+import { getReceiptDataWithID, snapshotToArray } from '../Firebase'
 
 
 class DetailsScreen extends React.Component {
@@ -25,41 +26,59 @@ class DetailsScreen extends React.Component {
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: `Digiceipt`
+    title: `Digiceipt`,
+    headerStyle: {
+      backgroundColor: colors.headerColor
+    },
+    headerTitleStyle: {
+      color: colors.headerTitleColor
+    }
+  }
+
+  state = {
+    receiptData: [],
+    loaded: false, 
+    pieData: []
+  }
+
+  componentWillMount() {
+    getReceiptDataWithID('000001').on('value', snapshot => {
+      this.setState({receiptData: snapshotToArray(snapshot).reverse(), loaded: true}, () => {
+        this.compilePieData()
+      })
+    })
+  }
+
+  compilePieData() {
+    let pd = categories
+
+    pd.map(item => {
+      item.amt = this.state.receiptData
+        .filter(x => x.category.toLowerCase() == item.category.toLowerCase())
+        .reduce((x,y) => x + parseFloat(y.amt), 0)
+    })
+
+    this.setState({pieData: pd}, () => console.log(this.state.pieData))
+    
+  }
+
+  calculateTotal() {
+    return this.state.receiptData.map(item => parseFloat(item.amt)).reduce((x, y) => x + y).toFixed(2)
+  }
+
+  createPie() {
+    return this.state.pieData
+    .filter(value => value.amt > 0)
+    .map((value, index) => ({
+      value: value.amt,
+      svg: {
+        fill: value.color
+      },
+      key: `pie-${index}`,
+    }))
   }
 
   render() {
-
-    const recent = [{
-      amt: 12.34,
-      img: 'http://bq.sg/wp-content/uploads/2017/01/292611_10150633680856409_1734062773_n.jpg',
-      name: 'NTUC',
-      color: colors.groceries
-    }, {
-      amt: 95.32,
-      img: 'https://blog.iuiga.com/wp-content/uploads/2018/10/Singtel-Logo.jpg',
-      name: 'Singtel',
-      color: colors.leisure
-    }, {
-      amt: 124.53,
-      img: 'https://i.pinimg.com/originals/40/fa/4d/40fa4da285df398dedff38c1c34bb113.jpg',
-      name: 'Tommy Hilfiger',
-      color: colors.shopping
-    }]
-
-    const totalSpend = categories.map(item => item.amt).reduce((x, y) => x + y)
-
-    const pieData = categories
-      .filter(value => value.amt > 0)
-      .map((value, index) => ({
-        value: value.amt,
-        svg: {
-          fill: value.color
-        },
-        key: `pie-${index}`,
-      }))
-
-
     return (
 
       <ScrollView style={{ flex: 1, paddingHorizontal: 16 }}>
@@ -76,26 +95,25 @@ class HomeScreen extends React.Component {
 
         </View>
 
-        <View style={{ marginVertical: 16 }}>
+        {
+          this.state.loaded ? 
+          <View style={{ marginVertical: 16 }}>
 
-          <PieChart
-            style={{ height: 200, marginVertical: 8 }}
-            data={pieData}
-          />
-          <Text style={{
-            textAlign: 'center',
-            textAlignVertical: 'center',
-            marginVertical: 8,
-            position: 'absolute',
-            width: Dimensions.get('window').width - 32,
-            height: 200,
-            fontWeight: 'bold',
-            opacity: 0.5,
-            fontSize: 20
-          }}>${totalSpend}</Text>
+          <View style={{ flexDirection: 'row' }}>
+            <PieChart
+              style={{ height: 200, width: 200, marginVertical: 8 }}
+              data={this.createPie()}
+            />
+            <View style={{ flex: 1, padding: 24, alignItems: 'flex-end'}}>
+              <Text style={{ fontSize: 16, opacity: 0.5}}>Total Expenses</Text>
+              <Text style={{fontSize: 24, fontWeight: 'bold'}}>${this.calculateTotal()}</Text>
+            </View>
+
+            
+          </View>
 
           <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-            {categories.sort((x,y) => y.amt - x.amt).map((item, index) => (
+            {this.state.pieData.sort((x, y) => y.amt - x.amt).map((item, index) => (
               <TouchableOpacity key={index} style={{ margin: 8, borderRadius: 16, elevation: 2, overflow: 'hidden' }} onPress={() => undefined}>
                 <ImageBackground source={{ uri: item.img }} style={{ flexDirection: 'row', width: 160, height: 96, borderBottomColor: item.color }}>
                   <View style={{ flex: 1, backgroundColor: item.color }}></View>
@@ -109,7 +127,10 @@ class HomeScreen extends React.Component {
 
             ))}
           </ScrollView>
-        </View>
+        </View> : null
+        }
+
+        
 
         <View style={{ marginVertical: 16 }}>
 
@@ -119,29 +140,28 @@ class HomeScreen extends React.Component {
           </View>
 
           <View>
-            {recent.map((item, index) => (
+            {this.state.loaded ? this.state.receiptData.filter((i, index) => index <3).map((item, index) => (
               <TouchableOpacity key={index} style={{ margin: 8, borderRadius: 16, elevation: 2, overflow: 'hidden', flexDirection: 'row' }} onPress={() => undefined}>
-                <View style={{ flex: 1, backgroundColor: item.color }}></View>
-
-                <Image source={{ uri: item.img }} style={{ width: 96, height: 96 }} />
+                <View style={{ flex: 1, backgroundColor: colors[item.category.toLowerCase()] }}></View>
+                <Image source={{ uri: item.shopThumbnail }} style={{ width: 72, height: 72, resizeMode: 'cover' }}/>
                 <View style={{ flex: 14, backgroundColor: '#fafafa', padding: 16, }}>
                   <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 16, fontWeight: 'bold', flex: 2 }}>{item.name}</Text>
+                    <Text style={{ fontSize: 16, fontWeight: 'bold', flex: 2 }}>{item.shopName}</Text>
                     <Text style={{ fontSize: 16, flex: 1, textAlign: 'right' }}>${item.amt}</Text>
                   </View>
 
-                  <Text style={{ fontSize: 12, opacity: 0.6 }}>Paid 2 days ago at 11:17am</Text>
+                  <Text style={{ fontSize: 12, opacity: 0.6 }}>{`${new Date(item.timestamp).getHours()%12}:${new Date(item.timestamp).getMinutes()} ${new Date(item.timestamp).getHours()/12 == 1 ? 'am': 'pm'}`}</Text>
                 </View>
               </TouchableOpacity>
-            ))}
-            <Button title='View all' type='clear' containerStyle={{marginVertical: 8}} onPress={() => this.props.navigation.navigate('Receipts')}/>
+            )) : null}
+            <Button title='View all' type='clear' containerStyle={{ marginVertical: 8 }} onPress={() => this.props.navigation.navigate('Receipts')} />
           </View>
 
         </View>
 
 
         <View style={{ marginVertical: 16 }}>
-          <Text style={{ fontWeight: 'bold', fontSize: 28}}>Deals you'll like</Text>
+          <Text style={{ fontWeight: 'bold', fontSize: 28 }}>Deals you'll like</Text>
 
           {ads.map((item, index) => (
             <TouchableOpacity key={index} style={{ borderRadius: 16, marginVertical: 8 }} onPress={() => Linking.openURL(item.link)}>
