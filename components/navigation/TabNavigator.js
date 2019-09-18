@@ -1,6 +1,6 @@
 import React from 'react'
 import {Ionicons} from '@expo/vector-icons';
-import { createBottomTabNavigator } from 'react-navigation'
+import { createBottomTabNavigator, createAppContainer } from 'react-navigation'
 
 import HomePage from '../tabs/HomeStack'
 import NewScanPage from '../tabs/ScanStack'
@@ -10,7 +10,7 @@ import AllRewardsPage from '../tabs/RewardsStack'
 
 import { headerColor } from '../../assets/sampledata/samplecolors'
 
-export default createBottomTabNavigator({
+const Navigator = createBottomTabNavigator({
   Home: HomePage,
   Receipts: AllReceiptsPage,
   Scan: NewScanPage,
@@ -45,3 +45,19 @@ export default createBottomTabNavigator({
     showIcon: true
   }
 })
+
+const NavigatorContainer = createAppContainer(Navigator)
+
+class TabNavigator extends React.Component {
+
+
+  componentDidMount() {
+    console.log(this.props.navigation.getParam('user', {}))
+  }
+
+  render() {
+    return <NavigatorContainer />
+  }
+}
+
+export default TabNavigator

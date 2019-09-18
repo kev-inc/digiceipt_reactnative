@@ -56,9 +56,7 @@ class ProfileScreen extends React.Component {
         renderItem={({item}) => (
           <ListItem
             title={item}
-            onPress={() => this.props.navigation.navigate('Details', {
-              name: item
-            })}
+            onPress={() => this.props.navigation.navigate('LoginStack')}
             />
         )}
         renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}

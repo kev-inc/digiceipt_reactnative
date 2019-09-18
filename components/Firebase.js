@@ -40,3 +40,21 @@ export function snapshotToArray(snapshot) {
 
   return returnArr;
 };
+
+export function getAuth() {
+  return firebase.auth()
+}
+
+export function updateUserProfile(uid, firstname, lastname, age, gender, email) {
+  return database.ref('userprofiles/' + uid).set({
+    firstname: firstname,
+    lastname: lastname,
+    age: age,
+    gender: gender, 
+    email: email
+  })
+}
+
+export function getUserProfile(uid) {
+  return database.ref('userprofiles/' + uid)
+}

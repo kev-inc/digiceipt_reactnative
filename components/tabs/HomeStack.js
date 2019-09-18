@@ -4,11 +4,10 @@ import { Text, Card, ListItem, Button } from 'react-native-elements'
 import { createStackNavigator } from 'react-navigation';
 import { PieChart } from 'react-native-svg-charts'
 import faker from 'faker'
-import { LinearGradient } from 'expo-linear-gradient';
 import { ads } from '../../assets/sampledata/sampleads'
 import { colors } from '../../assets/sampledata/samplecolors'
 import { categories } from '../../assets/sampledata/samplepiechart'
-import { getReceiptDataWithID, snapshotToArray } from '../Firebase'
+import { getReceiptDataWithID, snapshotToArray, getAuth, getUserProfile } from '../Firebase'
 
 
 class DetailsScreen extends React.Component {
@@ -38,14 +37,21 @@ class HomeScreen extends React.Component {
   state = {
     receiptData: [],
     loaded: false, 
-    pieData: []
+    pieData: [],
+    uid: '',
+    firstname: ''
   }
 
   componentWillMount() {
+    console.log(this.props.test)
     getReceiptDataWithID('000001').on('value', snapshot => {
       this.setState({receiptData: snapshotToArray(snapshot).reverse(), loaded: true}, () => {
         this.compilePieData()
       })
+    })
+    getUserProfile(getAuth().currentUser.uid).once('value').then(snapshot => {
+      console.log(snapshot.val())
+      this.setState({firstname: snapshot.val().firstname})
     })
   }
 
@@ -58,7 +64,7 @@ class HomeScreen extends React.Component {
         .reduce((x,y) => x + parseFloat(y.amt), 0)
     })
 
-    this.setState({pieData: pd}, () => console.log(this.state.pieData))
+    this.setState({pieData: pd})
     
   }
 
@@ -87,7 +93,7 @@ class HomeScreen extends React.Component {
 
           <View style={{ flexDirection: 'row' }}>
             <Text style={{ fontWeight: 'normal', fontSize: 28, }}>Hi </Text>
-            <Text style={{ fontWeight: 'bold', fontSize: 28, }}>{faker.name.firstName()}!</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 28, }}>{this.state.firstname}!</Text>
           </View>
 
           <Text style={{ fontWeight: 'normal', fontSize: 16, opacity: 0.5 }}>Here's a summary of your expenses this week!</Text>
@@ -119,7 +125,7 @@ class HomeScreen extends React.Component {
                   <View style={{ flex: 1, backgroundColor: item.color }}></View>
                   <View style={{ flex: 8, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>{item.category}</Text>
-                    <Text style={{ color: 'white', fontSize: 20 }}>${item.amt}</Text>
+                    <Text style={{ color: 'white', fontSize: 20 }}>${item.amt.toFixed(2)}</Text>
                   </View>
                   <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }}></View>
                 </ImageBackground>

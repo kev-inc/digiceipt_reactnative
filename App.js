@@ -1,15 +1,23 @@
 import React from 'react';
 import { Text, View, Button } from 'react-native';
 import Ionicons from '@expo/vector-icons';
-import { createStackNavigator, createAppContainer, createBottomTabNavigator } from 'react-navigation'
+import { createStackNavigator, createAppContainer, createBottomTabNavigator, createSwitchNavigator } from 'react-navigation'
 import { YellowBox } from 'react-native';
 import _ from 'lodash';
-
+import {getAuth} from './components/Firebase'
 
 
 import TabNavigator from './components/navigation/TabNavigator'
-import LoginPage from './components/auth/LoginPage'
-const AppContainer = createAppContainer(TabNavigator)
+import LoginStack from './components/auth/LoginStack'
+
+const StackNavigator = createSwitchNavigator({
+  LoginStack: LoginStack,
+  TabNavigator: TabNavigator
+}, {
+  initialRouteName: 'LoginStack'
+})
+
+const AppContainer = createAppContainer(StackNavigator)
 
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
@@ -25,19 +33,30 @@ export default class App extends React.Component {
     super()
     console.ignoredYellowBox = ['Setting a timer']
   }
-  state = {
-    loggedIn: true,
-    email: 'test@digiceipt.com', 
-    password: 'password'
+
+  componentDidMount() {
+    getAuth().onAuthStateChanged(user => {
+      this.setState(user)
+    }, () => console.log(this.state))
+  }
+
+  componentWillUnmount() {
+    this.authSubscription()
   }
 
   login = () => {
-    this.setState({loggedIn: true})
+    this.setState({ loggedIn: true })
+  }
+
+  logout = () => {
+    this.setState({ loggedIn: false })
   }
   render() {
-    if(this.state.loggedIn) {
-      return <AppContainer/>
-    } 
-    return <LoginPage login={this.login} email={this.state.email} password={this.state.password}/>
+    // return <OnboardContainer/>
+    // if (this.state.loggedIn) {
+    //   return <AppContainer screenProps={{ logout: this.logout }} />
+    // }
+    // return <LoginContainer screenProps={{ login: this.login, email: this.state.email, password: this.state.password }} />
+    return <AppContainer screenProps={{test:'screenpropz'}}/>
   }
 }
