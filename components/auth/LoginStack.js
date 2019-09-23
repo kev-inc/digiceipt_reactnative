@@ -22,7 +22,7 @@ class LoginPage extends React.Component {
       getAuth().signInWithEmailAndPassword(email, password)
         .then(user => {
           this.setState({ overlayIsVisible: false }, () => {
-            this.props.navigation.navigate('TabNavigator', { user: user })
+            this.props.navigation.navigate('TabNavigator', { auth: user })
           })
         })
         .catch(error => this.setState({ errorMsg: error.message, overlayIsVisible: false }))
@@ -42,8 +42,11 @@ class LoginPage extends React.Component {
     return (
       <KeyboardAvoidingView style={{ flex: 1, paddingVertical: 64, paddingHorizontal: 8 }} behavior="padding" enabled>
 
-        <Overlay isVisible={this.state.overlayIsVisible} height='auto' onBackdropPress={() => this.setState({ overlayIsVisible: false })}>
-          <Text>Signing in...</Text>
+        <Overlay isVisible={false} height='auto' onBackdropPress={() => this.setState({ overlayIsVisible: false })}>
+          <View style={{ justifyContent: 'center', padding: 16 }}>
+            <Text style={{ textAlign: 'center', fontSize: 16 }}>Signing in...</Text>
+            <Button loading type='clear' />
+          </View>
         </Overlay>
         <View style={{ alignItems: 'center' }}>
           <Image style={{ width: 160, height: 160 }} source={require('../../assets/icon.png')} />
@@ -78,22 +81,23 @@ class LoginPage extends React.Component {
             <Text style={{ paddingHorizontal: 20, color: 'red' }}>{this.state.errorMsg}</Text>
           </View>
 
-          <View style={{ flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 20, justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={{ fontSize: 32, fontWeight: 'bold' }}>Sign in</Text>
+          <View style={{ flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 20, justifyContent: 'flex-end' }}>
             <Button
-              backgroundColor="#03A9F4"
-              buttonStyle={{ borderRadius: 72, width: 72, height: 72 }}
               icon={{
-                name: "arrow-forward",
+                name: 'arrow-forward',
                 size: 24,
-                color: "white"
+                color: 'white'
               }}
+              title='Sign In'
+              iconRight={true}
+              buttonStyle={{ paddingHorizontal: 48, height: 80, borderRadius: 40, justifyContent: 'flex-end' }}
+              loading={this.state.overlayIsVisible}
               onPress={this.onLogin}
-            />
 
+            />
           </View>
 
-          <View style={{ flexDirection: 'row', flex: 1 }}>
+          <View style={{ flexDirection: 'row', flex: 1, marginVertical: 16 }}>
             <Button
               backgroundColor="#03A9F4"
               containerStyle={{ flex: 1 }}
@@ -105,12 +109,12 @@ class LoginPage extends React.Component {
             <Button
               backgroundColor="#03A9F4"
               containerStyle={{ flex: 1 }}
-              title="Forget password"
+              title="Forgot password"
               type='clear'
               onPress={this.props.login}
+              disabled
             />
           </View>
-
         </ScrollView>
 
 
@@ -158,9 +162,6 @@ class SignUpPage extends React.Component {
   render() {
     return (
       <KeyboardAvoidingView style={{ flex: 1, paddingVertical: 64, paddingHorizontal: 8 }} behavior="padding" enabled>
-        <Overlay isVisible={this.state.loadingOverlayIsVisible} height='auto' onBackdropPress={() => this.setState({ loadingOverlayIsVisible: false })}>
-          <Text>Creating account...</Text>
-        </Overlay>
 
         <Overlay isVisible={this.state.successOverlayIsVisible} height='auto' onBackdropPress={() => this.setState({ successOverlayIsVisible: false })}>
           <View>
@@ -260,19 +261,20 @@ class SignUpPage extends React.Component {
 
           <Text style={{ paddingHorizontal: 12, color: 'red' }}>{this.state.errorMsg}</Text>
 
-          <View style={{ flexDirection: 'row', paddingVertical: 12, paddingHorizontal: 20, justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={{ fontSize: 32, fontWeight: 'bold' }}>Sign up</Text>
+          <View style={{ flexDirection: 'row', paddingBottom: 24, paddingTop: 12, justifyContent: 'flex-end' }}>
+
             <Button
-              backgroundColor="#03A9F4"
-              buttonStyle={{ borderRadius: 72, width: 72, height: 72 }}
               icon={{
-                name: "arrow-forward",
+                name: 'arrow-forward',
                 size: 24,
-                color: "white"
+                color: 'white'
               }}
+              title='Sign Up'
+              iconRight={true}
+              buttonStyle={{ paddingHorizontal: 48, height: 80, borderRadius: 40, justifyContent: 'flex-end' }}
+              loading={this.state.loadingOverlayIsVisible}
               onPress={this.onRegister}
             />
-
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

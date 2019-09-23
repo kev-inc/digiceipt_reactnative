@@ -8,7 +8,7 @@ import { WebView } from 'react-native-webview'
 
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
-import { addReceiptToID } from '../Firebase'
+import { addReceiptToID, getAuth } from '../Firebase'
 
 class DetailsScreen extends React.Component {
   static navigationOptions = {
@@ -57,7 +57,7 @@ class DetailsScreen extends React.Component {
 
           <View style={{ flexDirection: 'row', padding: 16 }}>
             <Button title='Cancel' type='clear' containerStyle={{ width: '50%' }} onPress={() => this.props.navigation.replace('Scan')} />
-            <Button title='Save Receipt' containerStyle={{ width: '50%' }} onPress={() => this.sendDataToFirebase(scanData, '000001')} />
+            <Button title='Save Receipt' containerStyle={{ width: '50%' }} onPress={() => this.sendDataToFirebase(scanData, getAuth().currentUser.uid)} />
           </View>
 
         </View>

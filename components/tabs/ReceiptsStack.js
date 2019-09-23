@@ -89,7 +89,8 @@ class ReceiptScreen extends React.Component {
   }
 
   componentDidMount() {
-    getReceiptDataWithID('000001').on('value', snapshot => {
+    console.log(this.props.screenProps.auth.user.uid)
+    getReceiptDataWithID(this.props.screenProps.auth.user.uid).on('value', snapshot => {
       this.setState({receiptData: snapshotToArray(snapshot).reverse(), loaded: true})
     })
   }
@@ -107,7 +108,6 @@ class ReceiptScreen extends React.Component {
       tmp.push(x)
       catarr[d] = tmp
     })
-    console.log(catarr)
 
     let formatted = []
     Object.keys(catarr).forEach(key => {
@@ -130,7 +130,7 @@ class ReceiptScreen extends React.Component {
         leftElement={() => <Avatar size='medium' rounded source={{uri: item.shopThumbnail}} overlayContainerStyle={{ backgroundColor: 'white', elevation: 2}}
         />}
         rightElement={() => <Text>${item.amt}</Text>}
-        subtitle={`${new Date(item.timestamp).getHours()%12}:${new Date(item.timestamp).getMinutes()} ${new Date(item.timestamp).getHours()/12 == 1 ? 'am': 'pm'}`}
+        subtitle={`${new Date(item.timestamp).getHours()%12}:${String(new Date(item.timestamp).getMinutes()).padStart(2, '0')} ${new Date(item.timestamp).getHours()/12 == 1 ? 'am': 'pm'}`}
         onPress={() => this.props.navigation.navigate('Details', {
           item: item
         })}

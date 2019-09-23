@@ -10,11 +10,13 @@ import AllRewardsPage from '../tabs/RewardsStack'
 
 import { headerColor } from '../../assets/sampledata/samplecolors'
 
+import {getUserProfile, getAuth} from '../Firebase'
+
 const Navigator = createBottomTabNavigator({
   Home: HomePage,
-  Receipts: AllReceiptsPage,
   Scan: NewScanPage,
-  Rewards: AllRewardsPage,
+  Receipts: AllReceiptsPage,
+  // Rewards: AllRewardsPage,
   Profile: MyProfilePage
 }, {
   unmountInactiveRoutes: true,
@@ -50,13 +52,30 @@ const NavigatorContainer = createAppContainer(Navigator)
 
 class TabNavigator extends React.Component {
 
+  state={
+    loaded: false,
+    auth: {},
+    database: {},
+    backToLogin: () => this.props.navigation.navigate('LoginStack')
+  }
+
 
   componentDidMount() {
-    console.log(this.props.navigation.getParam('user', {}))
+
+    const auth = this.props.navigation.getParam('auth', null)
+    if (auth != null) {
+      getUserProfile(auth.user.uid).on('value', snapshot => {
+        this.setState({
+          loaded: true,
+          auth: auth,
+          database: snapshot.val()
+        })
+      })
+    }
   }
 
   render() {
-    return <NavigatorContainer />
+    return <NavigatorContainer screenProps={this.state}/>
   }
 }
 
